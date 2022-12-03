@@ -198,11 +198,13 @@ Step 2: 在cv的其他组最小化损失函数，估计增量。-q(i)表示不�
 
 - Doc：https://www.uplift-modeling.com/en/latest/index.html
 - Code：https://github.com/maks-sh/scikit-uplift
+- Example：[Example](./Tools/scikit-uplift/)
 
 ### pylift
 
 - Doc：https://pylift.readthedocs.io/en/latest/
 - Code：https://github.com/wayfair/pylift
+- Example：[Example](./Tools/pylift/)
 
 <img src="./img/Basic/040.png" style="zoom:50%;" />
 
@@ -210,7 +212,6 @@ Step 2: 在cv的其他组最小化损失函数，估计增量。-q(i)表示不�
 
 - Doc：https://upliftml.readthedocs.io/en/latest/
 - Code：https://github.com/bookingcom/upliftml
-
 
 
 ### Causal ML Packet
