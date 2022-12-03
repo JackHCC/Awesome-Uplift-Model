@@ -172,13 +172,14 @@ The most commonly used models for causal inference are Rubin Causal Model (RCM; 
 
 
 
-
-
 ## How to Apply Causal ML to Real Scene Modeling？
 
-- [基本概念](./Basic_Theory.md)
-- [ATE估计方法](ATE_Method.md)
-
+- [Basic Conception](./Basic_Theory.md)
+- [ATE Method](./ATE_Method.md)
+- [Basic of Uplift](./Basic_Uplift_Model.md)
+- [Uplift Modeling](./Uplift_Modeling.md)
+- [Debias](./Debias.md)
+- [Causal ML Framework](./Causal_ML_Framework.md)
 
 
 ## Contact

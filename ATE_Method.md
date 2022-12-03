@@ -1,4 +1,4 @@
-# ATE常用估计方法
+# ATE 常用估计方法
 这里主要讨论比较传统的计量方法，用于估计ATE或者CATE。
 
 这里主要的思路可以概括成：构造尽可能可信的反事实，逼近随机实验。具体学习这类方法可以参考：[The Effect](https://theeffectbook.net/introduction.html) 或者 [Causal Inference The Mixtape](https://mixtape.scunning.com/)
