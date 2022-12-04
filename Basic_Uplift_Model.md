@@ -218,6 +218,8 @@ Step 2: 在cv的其他组最小化损失函数，估计增量。-q(i)表示不�
 
 #### 简介
 
+**[Doc](https://causalml.readthedocs.io/en/latest/about.html)**
+
 **[Causal ML](https://github.com/uber/causalml)**是一个 Python 包，它提供了一套使用基于最近研究的机器学习算法的提升建模和因果推理方法。
 
 - **广告活动定位优化**：在广告活动中提高投资回报率的一个重要手段是将广告定位到在给定 KPI（例如参与度或销售量）中会有良好反应的客户群。CATE 通过根据 A/B 实验或历史观察数据在个人层面估计广告曝光的 KPI 影响来识别这些客户。

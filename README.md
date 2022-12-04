@@ -141,6 +141,15 @@ The most commonly used models for causal inference are Rubin Causal Model (RCM; 
 - [dosearch](https://cran.r-project.org/web/packages/dosearch/index.html)
 - [causalnex](https://github.com/quantumblacklabs/causalnex)
 
+### Interpretability Framework
+
+- Partial Dependence Plot (PDP)；
+- Individual Conditional Expectation (ICE)
+- Permuted Feature Importance
+- Global Surrogate
+- [Local Surrogate (LIME)](https://github.com/marcotcr/lime)
+- [Shapley Value (SHAP)](https://github.com/slundberg/shap)
+
 
 
 ## Datasets and Benchmark
