@@ -32,7 +32,11 @@ Alternatively, install from pypi by simply running `pip install pylift`.
 
 ## ⭐Uplift
 
-- 👉[Intro](https://pylift.readthedocs.io/en/latest/introduction.html)👈
+- **👉[Intro](https://pylift.readthedocs.io/en/latest/introduction.html)👈：Pylift实现的数学原理**
+
+<img src="../../img/Basic/049.png" style="zoom:80%;" />
+
+<img src="../../img/Basic/050.png" style="zoom:80%;" />
 
 
 

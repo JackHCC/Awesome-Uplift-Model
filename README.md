@@ -97,6 +97,23 @@ The most commonly used models for causal inference are Rubin Causal Model (RCM; 
 
 ## Tools
 
+### Uplift Evaluation
+
+#### Scikit-Uplift
+
+- [Doc](https://www.uplift-modeling.com/en/latest/index.html)
+- [Code](https://github.com/maks-sh/scikit-uplift)
+
+#### Pylift
+
+- [Doc](https://pylift.readthedocs.io/en/latest/)
+- [Code](https://github.com/wayfair/pylift)
+
+#### UpliftML
+
+- [Doc](https://upliftml.readthedocs.io/en/latest/)
+- [Code](https://github.com/bookingcom/upliftml)
+
 ### Probabilistic programming framework
 
 - [pyro](http://pyro.ai/)
@@ -179,6 +196,7 @@ The most commonly used models for causal inference are Rubin Causal Model (RCM; 
 - [ATE Method](./ATE_Method.md)
 - [Basic of Uplift](./Basic_Uplift_Model.md)
 - [Uplift Modeling](./Uplift_Modeling.md)
+- [Evaluation of Uplift](./Eval_Uplift.md)
 - [Debias](./Debias.md)
 - [Causal ML Framework](./Causal_ML_Framework.md)
 

@@ -131,6 +131,8 @@ plot_uplift_by_percentile(y_true=y_val, uplift=uplift_preds,
 
 - 👉[Here](https://www.uplift-modeling.com/en/latest/user_guide/index.html)👈
 
+<img src="../../img/Basic/049.png" style="zoom:80%;" />
+
 
 
 ## API sklift
