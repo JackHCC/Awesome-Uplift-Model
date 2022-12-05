@@ -72,7 +72,7 @@ Code Example: [meta_learners_with_synthetic_data.ipynb](./Tools/causalml/meta_le
 > > 3. 不能保range
 >
 
-Code Example: [Here](https://github.com/atrothman/Doubly_Robust_Estimation/blob/main/Doubly%20Robust%20Estimation.ipynb) | [dr_learner_with_synthetic_data.ipynb](./Tools/causalml/dr_learner_with_synthetic_data.ipynb)
+Code Example: [Here](https://github.com/atrothman/Doubly_Robust_Estimation/blob/main/Doubly%20Robust%20Estimation.ipynb)
 
 ---
 
@@ -138,6 +138,8 @@ Code Example: [causal_trees_with_synthetic_data.ipynb](./Tools/causalml/causal_t
 - Doubly Robust (DR) IV 
 
 
+
+Code Example:  [dr_learner_with_synthetic_data.ipynb](./Tools/causalml/dr_learner_with_synthetic_data.ipynb)
 
 ## **Neural-network-based Algorithms**
 
