@@ -121,6 +121,16 @@ $$
 
 
 
+---
+
+### Precision in Estimation of Heterogeneous Effect (PEHE)
+
+Ref: [Bayesian nonparametric modeling for causal inference](https://www.tandfonline.com/doi/pdf/10.1198/jcgs.2010.08162)
+$$
+PEHE =\frac{1}{N} \sum_{i=1}^N\left(\left(y_{i 1}-y_{i 0}\right)-\left(\hat{y}_{i 1}-\hat{y}_{i 0}\right)\right)^2
+$$
+where $y_1, y_0$ correspond to the true outcomes under $t=1$ and $t=0$, respectively, and $\hat{y}_1, \hat{y}_0$ correspond to the outcomes estimated by our model. 
+
 
 
 ## Reference

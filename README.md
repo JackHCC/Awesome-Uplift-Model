@@ -208,7 +208,8 @@ The most commonly used models for causal inference are Rubin Causal Model (RCM; 
 - [Evaluation of Uplift](./Eval_Uplift.md)
 - [Debias](./Debias.md)
 - [Causal ML Framework](./Causal_ML_Framework.md)
-- [Paper Reading](./Papers.md)
+- [Uplift Paper Reading](./Papers.md)
+- [Causal Discovery Paper Reading](./CD_Papers.md)
 
 
 
