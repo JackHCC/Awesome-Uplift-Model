@@ -16,6 +16,8 @@
 
 ## Meta Learner Algorithms
 
+更多参考：⭐[Meta-Learners](https://econml.azurewebsites.net/spec/estimation/metalearners.html)
+
 ✔ *Künzel S R, Sekhon J S, Bickel P J, et al. [Metalearners for estimating heterogeneous treatment effects using machine learning](https://www.pnas.org/doi/epdf/10.1073/pnas.1804597116)[J]. Proceedings of the national academy of sciences, 2019, 116(10): 4156-4165.
 
 - **S-learner** 
@@ -98,7 +100,7 @@ Code Example: [validation_with_tmle.ipynb](./Tools/causalml/validation_with_tmle
 
 > 适用场景：没有实验环境，只有observational的数据，已知我们没有真正的平行时空，也就是对于每一个观察到的样本，他要不然t=0，要不然t=1，就是他要不然是发券的，要不然是不发券的，他不可能在同一时空下即发券又不发券。所以我们需要给每个样本找一个“对子”，就是和他极其像，除了treatment不同的。怎么找呢？
 
-Rosenbaum P R, Rubin D B. [The central role of the propensity score in observational studies for causal effects](https://www.stat.cmu.edu/~ryantibs/journalclub/rosenbaum_1983.pdf)[J]. Biometrika, 1983, 70(1): 41-55.
+✔ Rosenbaum P R, Rubin D B. [The central role of the propensity score in observational studies for causal effects](https://www.stat.cmu.edu/~ryantibs/journalclub/rosenbaum_1983.pdf)[J]. Biometrika, 1983, 70(1): 41-55.
 
 - **PSM**
 
@@ -106,11 +108,11 @@ Rosenbaum P R, Rubin D B. [The central role of the propensity score in observati
 $$
 \hat{\tau}=\frac{1}{n}\left[\sum_{i: t_i=1}\left(y_i-y_j\right)+\sum_{i: t_i=0}\left(y_j-y_i\right)\right]
 $$
-Austin P C. [An introduction to propensity score methods for reducing the effects of confounding in observational studies](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3144483/)[J]. Multivariate behavioral research, 2011, 46(3): 399-424.
+✔ Austin P C. [An introduction to propensity score methods for reducing the effects of confounding in observational studies](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3144483/)[J]. Multivariate behavioral research, 2011, 46(3): 399-424.
 
 > PSM综述
 
-Hirano K, Imbens G W, Ridder G. [Efficient estimation of average treatment effects using the estimated propensity score](https://scholar.harvard.edu/imbens/files/efficient_estimation_of_average_treatment_effects_using_the_estimated_propensity_score.pdf)[J]. Econometrica, 2003, 71(4): 1161-1189.
+✔ Hirano K, Imbens G W, Ridder G. [Efficient estimation of average treatment effects using the estimated propensity score](https://scholar.harvard.edu/imbens/files/efficient_estimation_of_average_treatment_effects_using_the_estimated_propensity_score.pdf)[J]. Econometrica, 2003, 71(4): 1161-1189.
 
 - **IPTW**
 
@@ -139,6 +141,8 @@ Imai K, Ratkovic M. [Covariate balancing propensity score](https://imai.fas.harv
 
 
 ## Tree-based Algorithms
+
+更多参考：⭐[Forest Based Estimators](https://econml.azurewebsites.net/spec/estimation/forest.html)
 
 ✔ Piotr Rzepakowski and Szymon Jaroszewicz. [Decision trees for uplift modeling with single and multiple treatments](https://link.springer.com/content/pdf/10.1007/s10115-011-0434-0.pdf). *Knowl. Inf. Syst.*, 32(2):303–327, August 2012.
 
@@ -235,9 +239,11 @@ Wager S , Athey S . [Estimation and Inference of Heterogeneous Treatment Effects
 
 
 
-## Instrumental variables Algorithms
+## Instrumental Variables Algorithms
 
 > 一般不推荐使用IV方法，因为真正valid的工具变量非常难找，“只有上帝才能找到真正的IV”。
+>
+> 更多参考：⭐[Estimation Methods with Instruments](https://econml.azurewebsites.net/spec/estimation_iv.html)
 
 Angrist J D, Imbens G W, Rubin D B. [Identification of causal effects using instrumental variables](https://www.math.mcgill.ca/dstephens/AngristIV1996-JASA-Combined.pdf)[J]. Journal of the American statistical Association, 1996, 91(434): 444-455.
 
@@ -301,6 +307,19 @@ Johansson, Fredrik D., Shalit, Uri, and Sontag, David. [Learning representations
 
 ---
 
+V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, and a. W. Newey. [Double Machine Learning for Treatment and Causal Parameters](https://arxiv.org/pdf/1608.00060.pdf). *ArXiv e-prints*, July 2016.
+
+- **DML**
+
+> 更多参考：
+>
+> - ⭐[Double Machine Learning](https://econml.azurewebsites.net/spec/estimation/dml.html)
+> - ⭐[Dynamic Double Machine Learning](https://econml.azurewebsites.net/spec/estimation/dynamic_dml.html)
+
+
+
+---
+
 Shalit, Uri, Fredrik D. Johansson, and David Sontag. "[Estimating individual treatment effect: generalization bounds and algorithms.](http://proceedings.mlr.press/v70/shalit17a/shalit17a.pdf)" arXiv preprint arXiv:1606.03976 (2016).
 
 - **TARNet/CFR**
@@ -323,7 +342,7 @@ Yao, Liuyi, Sheng Li, Yaliang Li, Mengdi Huai, Jing Gao, and Aidong Zhang. "[Rep
 
 Schwab, Patrick, Lorenz Linhardt, and Walter Karlen. "[Perfect match: A simple method for learning representations for counterfactual inference with neural networks.](https://arxiv.org/pdf/1810.00656)" arXiv preprint arXiv:1810.00656 (2018)
 
-- Perfect Match
+- **Perfect Match**
 
 
 
