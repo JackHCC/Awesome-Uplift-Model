@@ -302,8 +302,6 @@ The package currently supports the following methods
 
 **Uber专场**
 
-最早就是uber的博客在茫茫paper的海洋中帮我找到了方向，如今听说它们AI LAB要解散了有些伤感，作为HTE最多star的开源方，它们值得拥有一个part
-
 1. Shuyang Du, James Lee, Farzin Ghaffarizadeh, 2017, Improve User Retention with Causal Learning [[文章连接\]](http://proceedings.mlr.press/v104/du19a/du19a.pdf)
 2. Zhenyu Zhao, Totte Harinen, 2020, Uplift Modeling for Multiple Treatments with Cost [[文章连接\]](https://arxiv.org/pdf/1908.05372.pdf)
 3. Will Y. Zou, Smitha Shyam, Michael Mui, Mingshi Wang, 2020, Learning Continuous Treatment Policy and Bipartite Embeddings for Matching with Heterogeneous Causal Effects Optimization [[文章链接\]](https://arxiv.org/pdf/2004.09703.pdf)

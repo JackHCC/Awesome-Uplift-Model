@@ -36,7 +36,7 @@ Code Example: [meta_learners_with_synthetic_data.ipynb](./Tools/causalml/meta_le
 
 ---
 
-✔ *Bang H, Robins J M. [Doubly robust estimation in missing data and causal inference models](https://www.math.mcgill.ca/dstephens/PSMMA/Articles/bang_robins_2005.pdf)[J]. Biometrics, 2005, 61(4): 962-973.
+*Bang H, Robins J M. [Doubly robust estimation in missing data and causal inference models](https://www.math.mcgill.ca/dstephens/PSMMA/Articles/bang_robins_2005.pdf)[J]. Biometrics, 2005, 61(4): 962-973.
 
 - **Doubly Robust (DR) learner** 
 
@@ -80,7 +80,7 @@ Code Example: [Here](https://github.com/atrothman/Doubly_Robust_Estimation/blob/
 
 ---
 
-✔ *Van Der Laan M J, [Rubin D. Targeted maximum likelihood learning](https://www.degruyter.com/document/doi/10.2202/1557-4679.1043/html)[J]. The international journal of biostatistics, 2006, 2(1).
+*Van Der Laan M J, [Rubin D. Targeted maximum likelihood learning](https://www.degruyter.com/document/doi/10.2202/1557-4679.1043/html)[J]. The international journal of biostatistics, 2006, 2(1).
 
 - **TMLE learner** 
 
@@ -96,7 +96,7 @@ Code Example: [validation_with_tmle.ipynb](./Tools/causalml/validation_with_tmle
 
 
 
-## PSM (propensity score matching)
+## ✔ PSM (propensity score matching)
 
 > 适用场景：没有实验环境，只有observational的数据，已知我们没有真正的平行时空，也就是对于每一个观察到的样本，他要不然t=0，要不然t=1，就是他要不然是发券的，要不然是不发券的，他不可能在同一时空下即发券又不发券。所以我们需要给每个样本找一个“对子”，就是和他极其像，除了treatment不同的。怎么找呢？
 
@@ -104,17 +104,30 @@ Code Example: [validation_with_tmle.ipynb](./Tools/causalml/validation_with_tmle
 
 - **PSM**
 
-对于PSM (propensity score matching) 来说，他是greedy one-to-one matching，就是一定 要给每个instance找一个对象。首先他会计算一个propensity score $P(t \mid x)$ ，为咶呢? 因为他假 设treatment t是一个从某个分布中抽出来的随机变量，即 $t_i \sim P\left(t_i \mid x_i\right)$ 。这个propensity score就是计算given $\mathrm{x}$ ，他倾向于得到某种treatment的概率，也就是一个二分类的分数，一般这 个score用LR来拟合。得到propensity score后，我们给每个样本找一个与之treatment不同的对象 (通过propensity score得分最接近来找)。所以对于样本i，我们找到样本 s.t $\operatorname{argmin}_j \operatorname{dist}(i, j)=\left|P\left(t \mid x_i\right)-P\left(t \mid x_j\right)\right|$ 。然后ATE就是:
-$$
-\hat{\tau}=\frac{1}{n}\left[\sum_{i: t_i=1}\left(y_i-y_j\right)+\sum_{i: t_i=0}\left(y_j-y_i\right)\right]
-$$
+> PSM的提出与理论基础
+>
+> 对于PSM (propensity score matching) 来说，他是greedy one-to-one matching，就是一定 要给每个instance找一个对象。首先他会计算一个propensity score $P(t \mid x)$ ，为咶呢? 因为他假 设treatment t是一个从某个分布中抽出来的随机变量，即 $t_i \sim P\left(t_i \mid x_i\right)$ 。这个propensity score就是计算given $\mathrm{x}$ ，他倾向于得到某种treatment的概率，也就是一个二分类的分数，一般这 个score用LR来拟合。得到propensity score后，我们给每个样本找一个与之treatment不同的对象 (通过propensity score得分最接近来找)。所以对于样本i，我们找到样本 s.t $\operatorname{argmin}_j \operatorname{dist}(i, j)=\left|P\left(t \mid x_i\right)-P\left(t \mid x_j\right)\right|$ 。然后ATE就是:
+> $$
+> \hat{\tau}=\frac{1}{n}\left[\sum_{i: t_i=1}\left(y_i-y_j\right)+\sum_{i: t_i=0}\left(y_j-y_i\right)\right]
+> $$
+
+
+
 ✔ Austin P C. [An introduction to propensity score methods for reducing the effects of confounding in observational studies](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3144483/)[J]. Multivariate behavioral research, 2011, 46(3): 399-424.
 
-> PSM综述
+> PSM综述，系统介绍了四种PSM方法：**Propensity score matching, Stratification (or subclassification) on the propensity score, Inverse probability of treatment weighting (IPTW) using the propensity score, and Covariate adjustment using the propensity score**。并详细介绍了**BALANCE DIAGNOSTICS**检验是否充分指定了倾向评分模型。
+>
+> 解读：[中文翻译](https://jackhcc.notion.site/An-Introduction-to-Propensity-Score-Methods-for-Reducing-the-Effects-of-Confounding-in-Observational-e4b847e1290f4bba8d25f212cce3b554)
+
+
 
 ✔ Hirano K, Imbens G W, Ridder G. [Efficient estimation of average treatment effects using the estimated propensity score](https://scholar.harvard.edu/imbens/files/efficient_estimation_of_average_treatment_effects_using_the_estimated_propensity_score.pdf)[J]. Econometrica, 2003, 71(4): 1161-1189.
 
 - **IPTW**
+
+> IPTW同样需要先计算倾向性评分（PS），通过PS赋予每个患者一个权重，试验组权重=1/PS，对照组权重=1/(1-PS)，这样子把每一个患者做了标准化PS加权处理后最终得到一个标准人群，在标准人群中试验组和对照组内部混杂分布趋于一致，也就是说此时两组疗效的不同可以归因为使用治疗方案的不同，两组可以进行比较了。相比较单纯的倾向性评分匹配（PSM），IPTW方法的优点是可以不损失样本量。
+>
+> 更多参考：[倾向性评分加权-IPTW（逆概率加权）-处理两组基线不平衡的好方法 (baidu.com)](https://baijiahao.baidu.com/s?id=1720986167494287077&wfr=spider&for=pc)
 
 
 
@@ -239,23 +252,27 @@ Wager S , Athey S . [Estimation and Inference of Heterogeneous Treatment Effects
 
 
 
-## Instrumental Variables Algorithms
+## ✔ Instrumental Variables Algorithms
 
 > 一般不推荐使用IV方法，因为真正valid的工具变量非常难找，“只有上帝才能找到真正的IV”。
 >
 > 更多参考：⭐[Estimation Methods with Instruments](https://econml.azurewebsites.net/spec/estimation_iv.html)
 
-Angrist J D, Imbens G W, Rubin D B. [Identification of causal effects using instrumental variables](https://www.math.mcgill.ca/dstephens/AngristIV1996-JASA-Combined.pdf)[J]. Journal of the American statistical Association, 1996, 91(434): 444-455.
+✔ Angrist J D, Imbens G W, Rubin D B. [Identification of causal effects using instrumental variables](https://www.math.mcgill.ca/dstephens/AngristIV1996-JASA-Combined.pdf)[J]. Journal of the American statistical Association, 1996, 91(434): 444-455.
 
 > 理论基础：文章给出了为什么IV是有效的论证。
 
 ---
 
-*Angrist J D, Imbens G W. [Two-Stage Least Squares Estimation of Average Causal Effects in Models With Variable Treatment Intensit](https://scholar.harvard.edu/imbens/files/wo-stage_least_squares_estimation_of_average_causal_effects_in_models_with_variable_treatment_intensity.pdf)[J]. Journal of the American statistical Association, 1995, 90(430): 431-442.
+✔ *Angrist J D, Imbens G W. [Two-Stage Least Squares Estimation of Average Causal Effects in Models With Variable Treatment Intensit](https://scholar.harvard.edu/imbens/files/wo-stage_least_squares_estimation_of_average_causal_effects_in_models_with_variable_treatment_intensity.pdf)[J]. Journal of the American statistical Association, 1995, 90(430): 431-442.
 
 - **2-Stage Least Squares (2SLS)**
 
 > 这个方法很有名，核心就是一个两阶段的模型，第一个阶段拟合iv的变化对t的影响，第二阶段拟合经过iv变化造成的t的变化对y的影响
+>
+> 更多参考：
+>
+> - [通俗理解：工具变量IV法VS两阶段最小二乘法2SLS - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/502792401)
 
 ---
 
@@ -263,18 +280,22 @@ Angrist J D, Imbens G W, Rubin D B. [Identification of causal effects using inst
 
 - **Doubly Robust (DR) IV** 
 
-> 文章对DRL详细介绍和理论的证明，并给附加了R代码。
+> 文章对DRL在IV上的应用详细介绍和理论的证明，并给附加了R代码。
 >
 
 Code Example: [dr_learner_with_synthetic_data.ipynb](./Tools/causalml/dr_learner_with_synthetic_data.ipynb)
 
 ---
 
-Hartford J, Lewis G, Leyton-Brown K, et al. [Deep IV: A flexible approach for counterfactual prediction[C]//International Conference on Machine Learning.](http://proceedings.mlr.press/v70/hartford17a/hartford17a.pdf) PMLR, 2017: 1414-1423.
+✔ Hartford J, Lewis G, Leyton-Brown K, et al. [Deep IV: A flexible approach for counterfactual prediction](http://proceedings.mlr.press/v70/hartford17a/hartford17a.pdf)[C]//International Conference on Machine Learning. PMLR, 2017: 1414-1423.
 
 - **Deep IV**
 
+> DeepIV程序有两个阶段：第一个阶段的密度估计程序，以估计F(p|x,z)，第二个阶段优化损失函数。【具体看论文】
+>
+> 解读：[中文翻译](https://jackhcc.notion.site/Deep-IV-A-flexible-approach-for-counterfactual-prediction-16f464a1d8964dcc8980c385be4f92e7)
 
+Code Example：[Here](https://github.com/jhartford/DeepIV)
 
 
 
