@@ -551,6 +551,18 @@ Code Example: [dragonnet_example.ipynb](./Tools/causalml/dragonnet_example.ipynb
 
 
 
+### Multitask learning Methods
+
+Alaa A M, Van Der Schaar M. [Bayesian inference of individualized treatment effects using multi-task gaussian processes](https://arxiv.org/pdf/1704.02801.pdf)[J]. Advances in neural information processing systems, 2017, 30.
+
+
+
+Alaa A M, Weisz M, Van Der Schaar M. [Deep counterfactual networks with propensity-dropout](https://arxiv.org/pdf/1706.05966.pdf)[J]. arXiv preprint arXiv:1706.05966, 2017.
+
+
+
+
+
 ## Continuous Treatment Effect
 
 > 上述所说的都是二元或离散型Treatment的uplift模型，或者说各种treatment effect的估计其实都focus在binary的情况，比如我们讨论发券不发券的因果效应， treatment T就是一个二元的， $T=1$ 表示发券， $T=0$ 表示不发。如果现在我们的问题变为发折扣率为多少的券带来的因果效应，这就变成了一个multi-valued或者continuous的问题了，如果你的折扣率只有比如10个档， 那这就是multi-valued的问题，如果折扣率可以取0-1之间的任意一个值，那就是continuous的问 题了。即我们研究的因果效应是 $E\left[Y \mid T=t_0\right]-E\left[Y \mid T=t_1\right]$ ，其中T是一个continuous的变量。具体而言，我们研究的是heterogeneous/individual continuous treatment effect，也就是对每个individual的treatment effect估计，具体表达如下
@@ -687,3 +699,78 @@ Code Example: [dragonnet_example.ipynb](./Tools/causalml/dragonnet_example.ipynb
 > $$
 > 即在parent node $\mathrm{P}$ 上，我们计算出 $\hat{\theta}_P, \hat{\nu}_P, A_P$ ，得到 $\rho_i$ ，然后再最大化这个splitting criteria。
 > 他和普通的DML我理解最大的区别一个是在求解treatment effect的时候考虑了训练样本的权重， 相当于一个加权的loss，另一个是加了一个noise term。
+
+
+
+## Others
+
+### Causal with Recommendation
+
+- 主要是对推荐数据的bias研究，推荐系统出现的各种偏差让其推荐非预期的 Item。一方面基于因果理论对排序模型进行优化，见LTR部分；另外，结合无偏的排序学习和衰减的点击模型、基于RL的策略梯度算法+off-policy correction 解决数据偏差的方法
+- [Causal Embeddings for Recommendation](https://arxiv.org/pdf/1706.07639.pdf)
+- [The Deconfounded Recommender: A Causal Inference Approach to Recommendation](https://arxiv.org/pdf/1808.06581.pdf)
+- [Doubly Robust Joint Learning for Recommendation on Data Missing Not at Random](http://proceedings.mlr.press/v97/wang19n/wang19n.pdf)
+- [Top-K Off-Policy Correction for a REINFORCE Recommender System](https://arxiv.org/pdf/1812.02353.pdf)
+- [Recommendations as Treatments: Debiasing Learning and Evaluation](http://proceedings.mlr.press/v48/schnabel16.pdf)
+- [Offline Recommender Learning Meets Unsupervised Domain Adaptation](https://arxiv.org/pdf/1910.07295.pdf)
+
+### Causal with LTR
+
+- LTR模型大多是基于用户反馈数据训练模型，这些数据大部分是隐式的，例如用户的点击、浏览、收藏、评论等，但这些数据存在许多偏差bias，如position bias和selection bias，基于因果理论，提出了Heckman rank，Propensity SVM rank，TrustPBM等做法
+- [Unbiased Learning-to-Rank with Biased Feedback](http://scholar.google.com/scholar_url?url=https://arxiv.org/pdf/1608.04468&hl=zh-CN&sa=X&ei=_4w0YIfzCsS2ywTe_r_AAg&scisig=AAGBfm21ZJ7nhkkLbm3aLFLirsMYjf-3Rg&nossl=1&oi=scholarr)
+- [Unbiased Learning to Rank with Unbiased Propensity Estimation](http://scholar.google.com/scholar_url?url=https://arxiv.org/pdf/1804.05938&hl=zh-CN&sa=X&ei=DY00YJLtD5X0yASbiZCgAQ&scisig=AAGBfm0g0couG60KIvSbEsFGtFGI2oMKVg&nossl=1&oi=scholarr)
+- [Addressing Trust Bias for Unbiased Learning-to-Rank](http://scholar.google.com/scholar_url?url=https://research.google/pubs/pub47859.pdf&hl=zh-CN&sa=X&ei=Go00YJuFDeaKywTEp4b4Cg&scisig=AAGBfm3-dNBebqrEvtYAeP1mCpr84upfIg&nossl=1&oi=scholarr)
+- [Correcting for Selection Bias in Learning-to-rank Systems](http://scholar.google.com/scholar_url?url=https://arxiv.org/pdf/2001.11358&hl=zh-CN&sa=X&ei=Jo00YKCOJueO6rQPiL6fuAo&scisig=AAGBfm1J7hl9L2L3_EYS8KB_dC-tdd_uFQ&nossl=1&oi=scholarr)
+
+### Causal with RL
+
+- 因果和RL在很多方面有相似性，两者结合的方法通常有以下几种：去除强化学习算法里的混杂效应，在强化学习中应用反事实框架，因果表示学习，使用强化学习的方法进行因果发现
+- [Deconfounding Reinforcement Learning in Observational Settings](https://arxiv.org/pdf/1812.10576.pdf)
+- [Woulda, Coulda, Shoulda: Counterfactually-Guided Policy Search](https://arxiv.org/pdf/1811.06272.pdf)
+- [Discovering and Removing Exogenous State Variables and Rewards for Reinforcement Learning](http://proceedings.mlr.press/v80/dietterich18a/dietterich18a.pdf)
+- [Structural Nested Models and G-estimation: The Partially Realized Promise](https://arxiv.org/pdf/1503.01589.pdf)
+- [CausalGAN: Learning Causal Implicit Generative Models with Adversarial Training](https://arxiv.org/pdf/1709.02023.pdf)
+
+
+### Applications
+
+- FB：
+  - **推荐**： [Observational Data for Heterogeneous Treatment Effects with Application to Recommender Systems](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3190359)
+- Hulu：
+  - **广告优化**： [Doubly Robust Estimation of Causal Effects](https://academic.oup.com/aje/article/173/7/761/103691?login=true)
+  - **用户/广告体验分析：**[Causal Inference at hulu](https://allentran.github.io/static/causal-inference-hulu.pdf)
+- Uber：
+  - 用户体验：
+    - [Mediation Modeling at Uber: Understanding Why Product Changes Work (and Don’t Work)](https://eng.uber.com/mediation-modeling/)
+    - [Using Causal Inference to Improve the Uber User Experience](https://eng.uber.com/causal-inference-at-uber/)
+  - **工具**： [CausalML: Python Package for Causal Machine Learning](https://arxiv.org/pdf/2002.11631v2.pdf)
+- 阿里：
+  - **搜索广告： [Estimating Individual Advertising Effect in E-Commerce](https://arxiv.org/abs/1903.04149)**
+  - 营销：
+    - [阿里文娱智能营销增益模型 (Uplift Model) 技术实践](https://www.6aiq.com/article/1585121131929)
+    - [因果推断在阿里文娱用户增长中的应用](https://www.infoq.cn/article/TdLIhY4MPB5om9379eMc)
+- 腾讯：
+  - **广告价值度量：** [Uplift⼴告增效衡量⽅案](https://qzonestyle.gtimg.cn/open_proj/gdt_gw/cms/uploads/Uplift20190524.pdf)
+- 京东：
+  - **MTA/DDA：** [Causally Driven Incremental Multi Touch Attribution Using a Recurrent Neural Network](https://arxiv.org/pdf/1902.00215.pdf)
+- EBay：
+  - **MTA/DDA:** [Interpretable Deep Learning Model for Online Multi-touch Attribution](https://arxiv.org/abs/2004.00384)
+- 贝壳：
+  - **营销：** [Uplift-Model 在贝壳业务场景中的实践](https://www.infoq.cn/article/fawupa6cs3ys8iuaiqsl)
+- Wayfair：
+  - **广告优化：** [Uplift modeling in Display Remarketing](https://tech.wayfair.com/data-science/2018/05/uplift-modeling-in-display-remarketing/)
+  - **工具：**[Pylift: A Fast Python Package for Uplift Modeling](https://tech.wayfair.com/data-science/2018/10/pylift-a-fast-python-package-for-uplift-modeling/)
+- Criteo：
+  - **推荐：** [Causal Embeddings for Recommendation](https://arxiv.org/pdf/1706.07639.pdf)
+- Linkedin:
+  - **商业活动价值验证：** The Importance of Being Causal
+  - [Causal inference from observational data: Estimating the effect of contributions on visitation frequency at LinkedIn](https://arxiv.org/pdf/1903.07755.pdf)
+- 微软：
+  - **搜索广告**：[Causal Inference in the Presence of Interference in Sponsored Search Advertising](https://arxiv.org/pdf/2010.07458.pdf)
+  - 工具：
+    - DoWhy:An End-to-End Library for Causal Inference
+    - [EconML](https://www.microsoft.com/en-us/research/project/econml/)
+- Huawei:
+  - **广告优化：**[Improving Ad Click Prediction by Considering Non-displayed Events](https://dl.acm.org/doi/10.1145/3357384.3358058)
+  - 推荐场景反事实预估：http://csse.szu.edu.cn/staff/panwk/publications/Conference-SIGIR-20-KDCRec.pdf
+- **DeepMind**： Algorithms for Causal Reasoning in Probability Trees
