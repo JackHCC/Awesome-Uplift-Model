@@ -170,6 +170,64 @@ IV的方法在计量里很流行，但在业界应用很少，主要有两个原
 
 更多细节：[参考](https://theeffectbook.net/ch-DifferenceinDifference.html)
 
+#### DID
+
+DID常常会结合matching做因果推断或无偏分布的生成
+
+双重差分DID （Difference-Differences）是因果评估的中常用的一种方法，应用场景：后验增效人群的生成，尝试双重差分和倾向性评分匹配的结合DID-PSM，预期可以提升对照组人群的精准度（分布、时间趋势等）
+
+**DID介绍**
+
+一个例子：有群体A和B，从某一时刻t开始，对A施加某种treatment，评估它带来的影响
+
+- 直观评估
+  - 方式：直接用A群体的指标均值 - B群体的指标均值
+  - 缺点：忽略了A、B群体的自有属性差异，例如A群体在施加treatment之前，指标均值已经高于B群体，那么上述的差值会放大treatment带来的影响
+- 双重差分评估（DID）
+  - 方式：重新考虑时间的动态变化、考虑个体差异两类因素
+
+**基准DID模型**
+
+$$Y_{it}=\alpha_0+\alpha_1*du+\alpha_2*dt+\alpha_3*du*dt+\epsilon_{it}$$
+
+其中，
+
+- $$i$$表示群体中的个体
+- $$du$$表示分组变量，若个体$$i$$被施加treatment，则$$i$$属于treatment组，此时$$du=1$$；若个体$$i$$不受政策实施的影响，则$$i$$属于control组，此时$$du=0$$
+- $$dt$$表示时间变量，treatment施加前$$dt=0$$，施加后$$dt=1$$
+- $$\alpha_1$$衡量treatment组和control的组别效应（组间的固有差别），$$\alpha_2$$代表了时间效应（时间前后的固有趋势）
+- $$du*dt$$表示分组变量和时间变量的交互项，系数$$\alpha_3$$反映了实施treamtment后的绝对增效（净效应），也是我们只需要关注的项，进行OLS估计即可
+
+解释为什么$$\alpha_3$$反映了净效应
+
+|                 | **施加treatment前**   | **施加treatment后**                     | **差值**              |
+| --------------- | --------------------- | --------------------------------------- | --------------------- |
+| **treatment组** | $$\alpha_0+\alpha_1$$ | $$\alpha_0+\alpha_1+\alpha_2+\alpha_3$$ | $$\alpha_2+\alpha_3$$ |
+| **control组**   | $$\alpha_0$$          | $$\alpha_0+\alpha_2$$                   | $$\alpha_2$$          |
+| **差值**        | $$\alpha_1$$          | $$\alpha_1+\alpha_3$$                   | $$\alpha_3$$          |
+
+**适用条件**
+
+- CT假设：满足平行趋势
+- SUTVA条件：施加的动作只影响treatment组，不影响control组
+- 线性：和分组变量和时间变量满足线性条件关系
+
+**DID的一种变形**
+
+在基准DID模型上，新增个体固定效应（individual-fixed effects）和时间固定效应（time-fixed effects），并去除单独变量。时间和个体固定效应既可以看成变量，也可以看成一种随机扰动项。
+
+定义如下：
+
+$$Y_{it}=\alpha_0+\alpha_1*du*dt+\lambda_i+\upsilon_t+\epsilon_{it}$$
+
+本质和基准DID类似，其中：
+
+- $$\lambda_i$$为个体固定效应，反映了个体特征，替代了原来粗糙的分组变量$$du$$
+- $$\upsilon_t$$为时间固定效应，反映了时间特征，替代了原来粗糙的时间变量$$dt$$
+- 估计方法依然是OLS，误差使用聚类稳健标准误(cluster-robust standard errors)
+
+
+
 ### 合成控制/Synthetic Control
 
 某种程度上合成控制是DID和Matching方法的结合，其思想是通过对 对照组样本加权构造一个和干预样本可比的对象，并把这个虚拟对照组在干预后的变现视为干预样本的反事实，由此构建了两种潜在结果的对比。**这个方法一般适用于干预样本很少或者只有一个的情况**。

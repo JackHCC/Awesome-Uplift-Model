@@ -96,3 +96,7 @@ $$\max_{x_{ij}}\sum_{i=1}^N\sum_{j=1}^{M}x_{ij}v_{ij}\\ s.t. \sum_{j=1}^{M} x_{i
 
 - [因果推断&案例集锦 - 知乎 (zhihu.com)](https://www.zhihu.com/column/c_1420441265503055872)
 - [广告策略算法的一点一滴 - 知乎 (zhihu.com)](https://www.zhihu.com/column/c_1330965385378873344)
+- [阿里文娱智能营销增益模型 (Uplift Model) 技术实践 - AIQ (6aiq.com)](https://www.6aiq.com/article/1585121131929)
+- [因果推断在阿里文娱用户增长中的应用_大数据_DataFunTalk_InfoQ精选文章](https://www.infoq.cn/article/TdLIhY4MPB5om9379eMc)
+- [Uplift广告增效衡量-官网 (gtimg.cn)](https://qzonestyle.gtimg.cn/open_proj/gdt_gw/cms/uploads/Uplift20190524.pdf)
+- [Uplift-Model在贝壳业务场景中的实践_测试_付东东_InfoQ精选文章](https://www.infoq.cn/article/fawupa6cs3ys8iuaiqsl)

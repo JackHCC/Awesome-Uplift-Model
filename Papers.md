@@ -555,11 +555,13 @@ Code Example: [dragonnet_example.ipynb](./Tools/causalml/dragonnet_example.ipynb
 
 Alaa A M, Van Der Schaar M. [Bayesian inference of individualized treatment effects using multi-task gaussian processes](https://arxiv.org/pdf/1704.02801.pdf)[J]. Advances in neural information processing systems, 2017, 30.
 
-
+> 解读：[中文翻译](https://jackhcc.notion.site/Bayesian-inference-of-individualized-treatment-effects-using-multi-task-gaussian-processes-233cca4cc643433c94636c4df4a2f05d)
+>
 
 Alaa A M, Weisz M, Van Der Schaar M. [Deep counterfactual networks with propensity-dropout](https://arxiv.org/pdf/1706.05966.pdf)[J]. arXiv preprint arXiv:1706.05966, 2017.
 
-
+> 解读：[中文翻译](https://jackhcc.notion.site/Deep-counterfactual-networks-with-propensity-dropout-30dc594d0c264f09a80861e9450c0ac2)
+>
 
 
 
@@ -735,42 +737,37 @@ Alaa A M, Weisz M, Van Der Schaar M. [Deep counterfactual networks with propensi
 ### Applications
 
 - FB：
-  - **推荐**： [Observational Data for Heterogeneous Treatment Effects with Application to Recommender Systems](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3190359)
+  - ✔ **推荐**： [Observational Data for Heterogeneous Treatment Effects with Application to Recommender Systems](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3190359)
 - Hulu：
-  - **广告优化**： [Doubly Robust Estimation of Causal Effects](https://academic.oup.com/aje/article/173/7/761/103691?login=true)
-  - **用户/广告体验分析：**[Causal Inference at hulu](https://allentran.github.io/static/causal-inference-hulu.pdf)
+  - ✔ **广告优化**： [Doubly Robust Estimation of Causal Effects](https://academic.oup.com/aje/article/173/7/761/103691?login=true)
+  - **✔ 用户/广告体验分析：**[Causal Inference at hulu](https://allentran.github.io/static/causal-inference-hulu.pdf)
 - Uber：
-  - 用户体验：
-    - [Mediation Modeling at Uber: Understanding Why Product Changes Work (and Don’t Work)](https://eng.uber.com/mediation-modeling/)
-    - [Using Causal Inference to Improve the Uber User Experience](https://eng.uber.com/causal-inference-at-uber/)
-  - **工具**： [CausalML: Python Package for Causal Machine Learning](https://arxiv.org/pdf/2002.11631v2.pdf)
+  - ✔ **工具**： [CausalML: Python Package for Causal Machine Learning](https://arxiv.org/pdf/2002.11631v2.pdf)
 - 阿里：
-  - **搜索广告： [Estimating Individual Advertising Effect in E-Commerce](https://arxiv.org/abs/1903.04149)**
-  - 营销：
+  - **✔ 搜索广告： [Estimating Individual Advertising Effect in E-Commerce](https://arxiv.org/abs/1903.04149)**
+  - ✔ 营销：
     - [阿里文娱智能营销增益模型 (Uplift Model) 技术实践](https://www.6aiq.com/article/1585121131929)
     - [因果推断在阿里文娱用户增长中的应用](https://www.infoq.cn/article/TdLIhY4MPB5om9379eMc)
 - 腾讯：
-  - **广告价值度量：** [Uplift⼴告增效衡量⽅案](https://qzonestyle.gtimg.cn/open_proj/gdt_gw/cms/uploads/Uplift20190524.pdf)
+  - ✔ **广告价值度量：** [Uplift⼴告增效衡量⽅案](https://qzonestyle.gtimg.cn/open_proj/gdt_gw/cms/uploads/Uplift20190524.pdf)
 - 京东：
-  - **MTA/DDA：** [Causally Driven Incremental Multi Touch Attribution Using a Recurrent Neural Network](https://arxiv.org/pdf/1902.00215.pdf)
+  - ✔ **MTA（multi-touch attribution）/DDA：** [Causally Driven Incremental Multi Touch Attribution Using a Recurrent Neural Network](https://arxiv.org/pdf/1902.00215.pdf)
 - EBay：
-  - **MTA/DDA:** [Interpretable Deep Learning Model for Online Multi-touch Attribution](https://arxiv.org/abs/2004.00384)
+  - ✔ **MTA/DDA:** [Interpretable Deep Learning Model for Online Multi-touch Attribution](https://arxiv.org/abs/2004.00384)
 - 贝壳：
-  - **营销：** [Uplift-Model 在贝壳业务场景中的实践](https://www.infoq.cn/article/fawupa6cs3ys8iuaiqsl)
+  - ✔ **营销：** [Uplift-Model 在贝壳业务场景中的实践](https://www.infoq.cn/article/fawupa6cs3ys8iuaiqsl)
 - Wayfair：
-  - **广告优化：** [Uplift modeling in Display Remarketing](https://tech.wayfair.com/data-science/2018/05/uplift-modeling-in-display-remarketing/)
-  - **工具：**[Pylift: A Fast Python Package for Uplift Modeling](https://tech.wayfair.com/data-science/2018/10/pylift-a-fast-python-package-for-uplift-modeling/)
+  - ✔ **工具：**[Pylift: A Fast Python Package for Uplift Modeling](https://tech.wayfair.com/data-science/2018/10/pylift-a-fast-python-package-for-uplift-modeling/)
 - Criteo：
-  - **推荐：** [Causal Embeddings for Recommendation](https://arxiv.org/pdf/1706.07639.pdf)
+  - ✔ **推荐：** [Causal Embeddings for Recommendation](https://arxiv.org/pdf/1706.07639.pdf)
 - Linkedin:
-  - **商业活动价值验证：** The Importance of Being Causal
-  - [Causal inference from observational data: Estimating the effect of contributions on visitation frequency at LinkedIn](https://arxiv.org/pdf/1903.07755.pdf)
+  - ✔ **商业活动价值验证：** The Importance of Being Causal [Causal inference from observational data: Estimating the effect of contributions on visitation frequency at LinkedIn](https://arxiv.org/pdf/1903.07755.pdf)
 - 微软：
-  - **搜索广告**：[Causal Inference in the Presence of Interference in Sponsored Search Advertising](https://arxiv.org/pdf/2010.07458.pdf)
-  - 工具：
+  - ✔ **搜索广告**：[Causal Inference in the Presence of Interference in Sponsored Search Advertising](https://arxiv.org/pdf/2010.07458.pdf)
+  - ✔ 工具：
     - DoWhy:An End-to-End Library for Causal Inference
     - [EconML](https://www.microsoft.com/en-us/research/project/econml/)
 - Huawei:
   - **广告优化：**[Improving Ad Click Prediction by Considering Non-displayed Events](https://dl.acm.org/doi/10.1145/3357384.3358058)
-  - 推荐场景反事实预估：http://csse.szu.edu.cn/staff/panwk/publications/Conference-SIGIR-20-KDCRec.pdf
+  - ✔ 推荐场景反事实预估：http://csse.szu.edu.cn/staff/panwk/publications/Conference-SIGIR-20-KDCRec.pdf
 - **DeepMind**： Algorithms for Causal Reasoning in Probability Trees
