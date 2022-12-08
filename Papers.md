@@ -564,7 +564,7 @@ Code Example: [dragonnet_example.ipynb](./Tools/causalml/dragonnet_example.ipynb
 
 - **GPS (generalized propensity score)**
 
-> 这篇文章是Hirano大神在04年的一个方法，文章是把binary情况下常用的propensity score的方 法应用到了continuous的场景下。回忆binary情况下的propensity score等于 $P(T=1 \mid X)$ ，然后通 过propensity score的构建，可以满足一个weak unconfoundedness的假设。接下来我来介绍一 下这个方法。首先我们假设 $T_i \mid X_i \sim N\left(\beta_0+\beta_1 X_i, \sigma^2\right)$ ，有了这个假设之后，我们可以根据 数据，用极大似然估计来解除一个通用的 $\left(\hat{\sigma}, \hat{\beta_0}, \hat{\beta_1}\right)$ ，于是在continuous的情况下，对于任 意的 $T_i, X_i$ ，我们就可以算出这个propensity score，这里也叫generalized propensity score
+> 这篇文章是Hirano大神在04年的一个方法，文章是把binary情况下常用的propensity score的方 法应用到了continuous的场景下。回忆binary情况下的propensity score等于 $P(T=1 \mid X)$ ，然后通 过propensity score的构建，可以满足一个weak unconfoundedness的假设。接下来我来介绍一 下这个方法。首先我们假设 $T_i \mid X_i \sim N\left(\beta_0+\beta_1 X_i, \sigma^2\right)$ ，有了这个假设之后，我们可以根据数据，用极大似然估计来解出一个通用的 $\left(\hat{\sigma}, \hat{\beta_0}, \hat{\beta_1}\right)$ ，于是在continuous的情况下，对于任意的 $T_i, X_i$ ，我们就可以算出这个propensity score，这里也叫generalized propensity score
 > $$
 > \hat{R}_i=\hat{R}\left(T_i, X_i\right)=\frac{1}{\sqrt{2 \pi \hat{\sigma}^2}} \exp \left(-\frac{1}{2 \hat{\sigma}^2}\left(T_i-\hat{\beta}_0-\hat{\beta}_1 X_i\right)^2\right)
 > $$
@@ -572,7 +572,7 @@ Code Example: [dragonnet_example.ipynb](./Tools/causalml/dragonnet_example.ipynb
 > $$
 > E[Y \mid T, R]=\alpha_0+\alpha_1 T+\alpha_2 T^2+\alpha_3 R+\alpha_4 R^2+\alpha_5 T R
 > $$
-> 然后我们通过ols或者任意解回归的方法，可以估出来 $\left(\hat{\alpha_0}, \hat{\alpha_1}, \hat{\alpha_2}, \hat{\alpha_3}, \hat{\alpha_4}, \hat{\alpha_5}\right)$ 。最后对于任意 一个新样本， $\left(X=X_i, T=T_i\right)$ ，我们可以估出来他的Y预测值，然后通过改变不同的T值， 来估计因果效应，也就是heterogeneous/individual continuous treatment effect
+> 然后我们通过ols或者任意解回归的方法，可以估出来 $\left(\hat{\alpha_0}, \hat{\alpha_1}, \hat{\alpha_2}, \hat{\alpha_3}, \hat{\alpha_4}, \hat{\alpha_5}\right)$ 。最后对于任意一个新样本， $\left(X=X_i, T=T_i\right)$ ，我们可以估出来他的Y预测值，然后通过改变不同的T值， 来估计因果效应，也就是heterogeneous/individual continuous treatment effect
 > $$
 > \begin{aligned}
 > & Y\left(T=\widehat{T_i, X}=X_i\right)=\hat{\alpha_0}+\hat{\alpha_1} T_i+\hat{\alpha_2} T_i^2+\hat{\alpha_3} \hat{R}\left(T_i, X_i\right)+\hat{\alpha_4} \hat{R}\left(T_i, X_i\right)^2 \\
@@ -580,7 +580,7 @@ Code Example: [dragonnet_example.ipynb](./Tools/causalml/dragonnet_example.ipynb
 > \end{aligned}
 > $$
 > 当然，你也可以估计某个 $T=t$ 下的average treatment effect，就是把所有X情况下的结果平均起 来。
-> 这个方法可以理解为通过纳入generalized propensity score项进入dose-response模型 (T和Y的 响应方程)，消除了因为confounder带来的bias，也就是 $X \perp 1\{T=t\} \mid R(t, X)$ ，这个和标准 的propensity score的用途是一样的，所以把generalized propensity score纳入最后的doseresponse方程，就能让这个方程做到unconfoundedness，也就是通过这个公式推出来的因果效 应是真正的因果。
+> 这个方法可以理解为通过纳入generalized propensity score项进入dose-response模型 (T和Y的响应方程)，消除了因为confounder带来的bias，也就是 $X \perp 1\{T=t\} \mid R(t, X)$ ，这个和标准的propensity score的用途是一样的，所以把generalized propensity score纳入最后的doseresponse方程，就能让这个方程做到unconfoundedness，也就是通过这个公式推出来的因果效应是真正的因果。
 
 
 
@@ -597,7 +597,7 @@ Code Example: [dragonnet_example.ipynb](./Tools/causalml/dragonnet_example.ipynb
 > & M 2: \tilde{T}=Y-\hat{T}(X)
 > \end{aligned}
 > $$
-> 这里的 $\tilde{Y}$ 和 $\tilde{T}$ 就是拟合出来的残差， $\hat{Y}$ 和 $\hat{T}$ 可以用任意机器学习模型拟合。然后我们得到残 差模型之后，理论上我们的treatment effect $\theta(X)$ 可以通过fit一个简单的回归模型 $\tilde{Y}=\theta(X) \tilde{T}$ 得到。因为其实残差就是变化量，所以天然的 $\theta(X)$ 就是对两个残差量的关系描 述，也就是因果效应。现在问题来了，就是我们怎么求 $\theta(X)$ 。这不是一个参数，而是一个和X有 关的方程。
+> 这里的 $\tilde{Y}$ 和 $\tilde{T}$ 就是拟合出来的残差， $\hat{Y}$ 和 $\hat{T}$ 可以用任意机器学习模型拟合。然后我们得到残差模型之后，理论上我们的treatment effect $\theta(X)$ 可以通过fit一个简单的回归模型 $\tilde{Y}=\theta(X) \tilde{T}$ 得到。因为其实残差就是变化量，所以天然的 $\theta(X)$ 就是对两个残差量的关系描述，也就是因果效应。现在问题来了，就是我们怎么求 $\theta(X)$ 。这不是一个参数，而是一个和X有关的方程。
 > 如果我们用最小二乘法来解这个问题，即我们想要最小化 $\operatorname{argmin}_{\theta(X)}(\tilde{Y}-\theta(X) \tilde{T})^2$ 。对其 求一阶导等于0，我们可以得到 $\hat{\theta}(X)=\frac{\tilde{Y}}{\tilde{T}}$ ，于是对 $\hat{\theta}(X)$ 的拟合可以以 $\frac{\tilde{Y}}{\tilde{T}}$ 作为label来拟 合，假设我们用一个一元回归来拟合， $\theta(X)=\alpha X=\frac{\tilde{Y}}{\tilde{T}}$ ，整理左右两边即可得到
 > $$
 > M 3: \alpha \tilde{T} X=\tilde{Y}
@@ -625,7 +625,7 @@ Code Example: [dragonnet_example.ipynb](./Tools/causalml/dragonnet_example.ipynb
 
 - **GRF (generalized random forest)**
 
-> 这个方法和上面的LinearDML的第一阶段残差模型是完全一样的，目的也是一样的。差别在于第 二阶段的拟合。首先第一阶段还是拟合出两个残差模型，用任意的机器学习模型。
+> 这个方法和上面的LinearDML的第一阶段残差模型是完全一样的，目的也是一样的。差别在于第二阶段的拟合。首先第一阶段还是拟合出两个残差模型，用任意的机器学习模型。
 > $$
 > \begin{aligned}
 > & M 1: \tilde{Y}=Y-\hat{Y}(X) \\
@@ -636,7 +636,7 @@ Code Example: [dragonnet_example.ipynb](./Tools/causalml/dragonnet_example.ipynb
 >
 > **变量定义**
 >
-> 我们先做几个定义，因为这个方法非常复杂。假设我们有一个target $O$ ，你可以把它理解为一种 损失函数，这个 $O$ 和我们要拟合的参数 $\theta$ 和 $\nu$ 有关，我们希望拟合出来的 $\theta$ 和 $\nu$ 最小化这个损失，只不过我们这个损失是根据样本加权的。即:
+> 我们先做几个定义，因为这个方法非常复杂。假设我们有一个target $O$ ，你可以把它理解为一种损失函数，这个 $O$ 和我们要拟合的参数 $\theta$ 和 $\nu$ 有关，我们希望拟合出来的 $\theta$ 和 $\nu$ 最小化这个损失，只不过我们这个损失是根据样本加权的。即:
 > $$
 > (\hat{\theta}(x), \hat{\nu}(x))=\operatorname{argmin}_{\theta, \nu}\left\{\left\|\sum_{i=1}^n \alpha_i(x) \psi_{\theta, \nu}\left(O_i\right)\right\|\right\}
 > $$
