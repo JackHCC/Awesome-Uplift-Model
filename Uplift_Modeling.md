@@ -86,3 +86,13 @@ $$\max_{x_{ij}}\sum_{i=1}^N\sum_{j=1}^{M}x_{ij}v_{ij}\\ s.t. \sum_{j=1}^{M} x_{i
 ## 总结
 
 <img src="./img/Basic/046.png" style="zoom:70%;" />
+
+
+
+## Uplift应用建模优质博客与专栏
+
+- [Uplift Modeling的相关案例介绍 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/442881104)
+- [笔记︱数据科学领域因果推断案例集锦（第二弹） - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/522888665)
+
+- [因果推断&案例集锦 - 知乎 (zhihu.com)](https://www.zhihu.com/column/c_1420441265503055872)
+- [广告策略算法的一点一滴 - 知乎 (zhihu.com)](https://www.zhihu.com/column/c_1330965385378873344)

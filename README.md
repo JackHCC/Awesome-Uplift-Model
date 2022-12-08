@@ -131,8 +131,8 @@ The most commonly used models for causal inference are Rubin Causal Model (RCM; 
 ### Causal Inference
 
 - [Ananke](https://ananke.readthedocs.io/en/latest/)
-- [EconML](https://github.com/microsoft/EconML)
-- [dowhy](https://github.com/microsoft/dowhy)
+- **[EconML](https://github.com/microsoft/EconML)**
+- **[dowhy](https://github.com/microsoft/dowhy)**
 - [**causalml**](https://github.com/uber/causalml)
 - [WhyNot](https://whynot.readthedocs.io/en/latest/)
 - [CausalImpact](https://github.com/google/CausalImpact)

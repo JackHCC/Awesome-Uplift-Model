@@ -36,11 +36,48 @@ Code Example: [meta_learners_with_synthetic_data.ipynb](./Tools/causalml/meta_le
 
 ---
 
-*Bang H, Robins J M. [Doubly robust estimation in missing data and causal inference models](https://www.math.mcgill.ca/dstephens/PSMMA/Articles/bang_robins_2005.pdf)[J]. Biometrics, 2005, 61(4): 962-973.
+✔ *Bang H, Robins J M. [Doubly robust estimation in missing data and causal inference models](https://www.math.mcgill.ca/dstephens/PSMMA/Articles/bang_robins_2005.pdf)[J]. Biometrics, 2005, 61(4): 962-973.
 
 - **Doubly Robust (DR) learner** 
 
-> 文章提出的DRL本质上是一种去偏方法
+> 文章提出的DRL本质上是一种去偏方法，采用的PSM方法下的IPW方法，也称Augmented IPW。
+>
+> **ATE估计**：
+> $$
+> \text { ATE } =\frac{1}{N} \sum\left(\frac{\mathrm{T}_{\mathrm{i}}\left(\mathrm{Y}_{\mathrm{i}}-\hat{\mu}_1\left(\mathrm{X}_{\mathrm{i}}\right)\right)}{\hat{\mathrm{P}}\left(\mathrm{X}_{\mathrm{i}}\right)}+\hat{\mu}_1\left(\mathrm{X}_{\mathrm{i}}\right)\right)-\frac{1}{\mathrm{~N}} \sum\left(\frac{\left(1-\mathrm{T}_{\mathrm{i}}\right)\left(\mathrm{Y}_{\mathrm{i}}-\hat{\mu}_0\left(\mathrm{X}_{\mathrm{i}}\right)\right)}{1-\hat{\mathrm{P}}\left(\mathrm{X}_{\mathrm{i}}\right)}+\hat{\mu}_0\left(\mathrm{X}_{\mathrm{i}}\right)\right)
+> $$
+> 其中, $\hat{P}(\mathrm{x})$ 代表倾向性得分, $\hat{\mu_1}(\mathrm{x})$ 是对 $\mathrm{E}[\mathrm{Y} \mid \mathrm{X}, \mathrm{T}=1]$ 的估计, $\hat{\mu_0}(\mathrm{x})$ 是对 $\mathrm{E}[\mathrm{Y} \mid \mathrm{X}, \mathrm{T}=0]$ 的估计. 从公式上可以看到, 第一部分 计算 $\mathrm{E}\left[\mathrm{Y}_1\right]$, 第二部分计算 $\mathrm{E}\left[\mathrm{Y}_0\right]$.
+>
+> DRL的优点之一就是它只要求**在倾向性得分估计模型和outcome估计模型中，其中一种是准确的即可**,即 $\hat{P}(x)$ 或 $\hat{\mu}(x)$ 其中一种估计准确 即可。以 $\mathrm{E}\left[\mathrm{Y}_1\right]$ 为例:
+> $$
+> \hat{\mathrm{E}}\left[\mathrm{Y}_{\mathrm{H}}\right]=\frac{1}{\mathrm{~N}} \sum\left(\frac{\mathrm{T}_{\mathrm{i}}\left(\mathrm{Y}_{\mathrm{i}}-\hat{\mu}_1\left(\mathrm{X}_{\mathrm{i}}\right)\right)}{\hat{\mathrm{P}}\left(\mathrm{X}_{\mathrm{i}}\right)}+\hat{\mu}_{\mathrm{i}}\left(\mathrm{X}_{\mathrm{i}}\right)\right)
+> $$
+> 假设 $\hat{\mu_1}(\mathrm{x})$ 是正确的. 即使倾向性得分模型是错的，仍然有 $\mathrm{E}\left[\mathrm{T}_{\mathrm{i}}\left(\mathrm{Y}_{\mathrm{i}}-\hat{\mu}_1\left(\mathrm{X}_{\mathrm{i}}\right)\right)\right]=0$, 那么 $\left(\mathrm{E}\left[\mathrm{Y}_1\right]\right.$ 也就是正确的。同样地， $\mathrm{E}\left[\mathrm{Y}_0\right]$ 也 是如此。
+>
+> **CATE估计**：
+>
+> 第一阶段：
+> - 使用X和T估计 $Y$ ，得到 $Y^{(t)}=g_t(X)+\epsilon_t$
+> - 使用X估计 $T$ ，得到 $\operatorname{Pr}[T=\mathrm{t} \mid \mathrm{X}]=\mathrm{p}_{\mathrm{t}}(\mathrm{X})$
+>   其中， $\mathrm{t}$ 表示Treatment，就是在实验组中进行回归建模。
+>
+> 第二阶段:
+> $$
+> \mathrm{Y}_{\mathrm{i}, \mathrm{t}}^{\mathrm{DR}}=\mathrm{g}_{\mathrm{t}}\left(\mathrm{X}_{\mathrm{i}}\right)+\frac{\mathrm{Y}_{\mathrm{i}}-\mathrm{g}_{\mathrm{t}}\left(\mathrm{X}_{\mathrm{i}}\right)}{\mathrm{pt}_{\mathrm{t}}\left(\mathrm{X}_{\mathrm{i}}\right)} \cdot 1 \mathrm{~T}_{\mathrm{i}}=\mathrm{t}
+> $$
+> 通过基于 $\mathrm{X}_{\mathrm{i}}$ 回归 $\mathrm{Y}_{\mathrm{i}, \mathrm{t}}^{\mathrm{DR}}-\mathrm{Y}_{\mathrm{i}, 0}^{\mathrm{DR}}$ 得到 $\theta_{\mathrm{t}}(\mathrm{X})$.
+>
+> 因此这里涉及到三个模型$g_t(X), p_t(X), \theta_t(X)$，EconML代码实例：
+>
+> ```python
+> from econml.dr import DRLearner
+> from sklearn.ensemble import GradientBoostingRegressor, GradientBoostingClassifier
+> est = DRLearner(model_regression=GradientBoostingRegressor(),
+>                 model_propensity=GradientBoostingClassifier(),
+>                 model_final=GradientBoostingRegressor())
+> est.fit(y, T, X=X, W=W)
+> point = est.effect(X, T0=T0, T1=T1)
+> ```
 >
 > 更多参考：
 >
@@ -49,6 +86,8 @@ Code Example: [meta_learners_with_synthetic_data.ipynb](./Tools/causalml/meta_le
 
 <img src="./img/Basic/052.jpg" style="zoom:60%;" />
 
+> Loss：
+>
 > - Response loss:
 >
 > $$\ell_1 = \frac{1}{n}\sum_{i=1}^n\ell(Y_i, q(X_i,T_i)) $$，$$\ell_2 = \frac{1}{n}\sum_{i=1}^n \log\{b(T_i|X_i)\} $$
@@ -80,7 +119,7 @@ Code Example: [Here](https://github.com/atrothman/Doubly_Robust_Estimation/blob/
 
 ---
 
-*Van Der Laan M J, [Rubin D. Targeted maximum likelihood learning](https://www.degruyter.com/document/doi/10.2202/1557-4679.1043/html)[J]. The international journal of biostatistics, 2006, 2(1).
+✔ *Van Der Laan M J, Rubin D. [Targeted maximum likelihood learning](https://www.degruyter.com/document/doi/10.2202/1557-4679.1043/html)[J]. The international journal of biostatistics, 2006, 2(1).
 
 - **TMLE learner** 
 
@@ -96,7 +135,7 @@ Code Example: [validation_with_tmle.ipynb](./Tools/causalml/validation_with_tmle
 
 
 
-## ✔ PSM (propensity score matching)
+## PSM (propensity score matching)
 
 > 适用场景：没有实验环境，只有observational的数据，已知我们没有真正的平行时空，也就是对于每一个观察到的样本，他要不然t=0，要不然t=1，就是他要不然是发券的，要不然是不发券的，他不可能在同一时空下即发券又不发券。所以我们需要给每个样本找一个“对子”，就是和他极其像，除了treatment不同的。怎么找呢？
 
@@ -131,25 +170,65 @@ Code Example: [validation_with_tmle.ipynb](./Tools/causalml/validation_with_tmle
 
 
 
-## Covariate Balancing Method
+### Covariate Balancing Method
 
 > 这类方法核心我理解在于给样本去重新赋权，即对sample进行re-weighting，IPTW也是这类的方法，只不过IPTW使用propensity score进行re-weighting，所以算进了propensity score的方法。re-weight之后的sample就可以直接通过ATE的公式用t=1的样本re-weight后的y减去t=0的样本re-weight后的y来做ATE的估计。
 
-Hainmueller J. [Entropy balancing for causal effects: A multivariate reweighting method to produce balanced samples in observational studies](https://econpapers.repec.org/article/cuppolals/v_3a20_3ay_3a2012_3ai_3a01_3ap_3a25-46_5f01.htm)[J]. Political analysis, 2012, 20(1): 25-46.
+✔ Hainmueller J. [Entropy balancing for causal effects: A multivariate reweighting method to produce balanced samples in observational studies](https://web.stanford.edu/~jhain/Paper/PA2012.pdf)[J]. Political analysis, 2012, 20(1): 25-46.
 
 - **Entropy Balancing (EB)**
 
+> Hainmueller (2012) 构建了「熵平衡方法」 (Entropy Balancing)，使研究者能够同时控制处理组与对照组样本协变量多维平衡性，如同时考虑协变量的一阶矩、二阶矩、三阶矩和交叉矩等，进而最大程度上使两组样本在实现精确匹配。
+>
+> 需要强调的是，熵平衡方法并不能完全克服内生性问题。在实际工作中，研究者仍需搭配其他计量工具进行系统检验，以保证回归结果的稳健性和合理性。
+>
+> 在进行随机性实验时，研究者主要关注的结果是总体平均处理效应 (the Population Average Treament Effect on the Treated)，可以由以下公式表示:
+> $$
+> \tau=E[Y(1) \mid D=1]-E[Y(0) \mid D=1]
+> $$
+> 其中， $E[Y(1) \mid D=1]$ 表示处理组实验发生后的效应大小， $E[Y(0) \mid D=1]$ 表示处理组在没有发生实验后的效应大 小。
+> 显然， $E[Y(0) \mid D=1]$ 是一个反事实指标，在现实中不可能存在对应的数据。为此，学者尽可能寻找与处理组协变量分布相似的对照组样本，来近似估计这一项。
+> 目前，我们熟知的协变量匹配方法包括最近邻匹配 (NNM)、粗化精确匹配 (CEM)、倾向得分匹配 (PSM) 等。以倾向得分匹配为例， $E[Y(0) \mid D=1]$ 可以通过以下表达式计算得到:
+> $$
+> E[Y(0) \mid D=1]=\frac{\sum_{i \mid D=0} Y_i d_i}{\sum_{i \mid D=0} d_i}
+> $$
+> 其中， $d_i=\frac{p\left(x_i\right)}{1-p\left(x_i\right)} ， p_i$ 为倾向得分值。
+> 不过，这些匹配方法面临的一个共同问题是：研究者无法保证联合并平衡所有协变量，难以避免倾向得分模型被错误指定的可能。为了解决这一问题，学者通常利 Logit 回归挑选可以通过平衡性检验的协变量组合。但是，这样做费时费力，同 时无法完全保证最终得到高水平的协变量组合。
+> 在上述基础上，Hainmueller (2012) 推导出熵平衡方法，以熵权重 $\omega_i$ 代替 $d_i$ ，得到反事实指标 $E[Y(0) \mid D=1]$ 的表达 式如下所示:
+> $$
+> E[Y(0) \mid D=1]=\frac{\sum_{i \mid D=0} Y_i \omega_i}{\sum_{i \mid D=0} \omega_i}
+> $$
+> 权重 $\omega_i$ 通过以下公式决定:
+> $$
+> \min H\left(\omega_i\right)=\sum_{i \mid D=0} \omega_i \log \left(\omega_i / q_i\right)
+> $$
+> 其中， $q_i=1 / n ， n$ 表示对照组样本数量。 $\omega_i$ 具有一定约束条件，其核心思想是，给予对照组协变量增加一组矩约束，使其与处理组的协变量相平衡。矩约束包括均值 (一阶矩)、方差 (二阶矩) 和偏度 (三阶矩)。有关最小化熵距离和 $\omega_i$ 的相关数 理验证这里就不展开描述了，对此感兴趣可以自行阅读 Hainmueller 的相关文献。
+>
+> 更多参考：
+>
+> - [ebalance：基于熵平衡法的协变量平衡性检验| 连享会主页 (lianxh.cn)](https://www.lianxh.cn/news/e2c50283ba51b.html)
 
 
-Athey S, Imbens G W, Wager S. [Approximate residual balancing: debiased inference of average treatment effects in high dimensions](https://arxiv.org/pdf/1604.07125.pdf)[J]. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 2018, 80(4): 597-623.
+
+✔ Athey S, Imbens G W, Wager S. [Approximate residual balancing: debiased inference of average treatment effects in high dimensions](https://arxiv.org/pdf/1604.07125.pdf)[J]. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 2018, 80(4): 597-623.
 
 - **Approximate Residual Balancing (ARB)**
+
+> 第一步也是通过计算样本权重使得一阶矩一致，第二步与 Doubly Robust 的思想一致，加入了回归模型，并在第三步结合了前两步的结果估计平均因果效应。只要样本权重的估计和反事实预测模型中有一个是对的，计算出的平均因果效应就是无偏的。
 
 
 
 Imai K, Ratkovic M. [Covariate balancing propensity score](https://imai.fas.harvard.edu/research/files/CBPS.pdf)[J]. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 2014, 76(1): 243-263.
 
 - **Covariate Balancing Propensity Score (CBPS)**
+
+> IPW方法的倾向得分其实是策略的倾向选择概率，但是选择性偏差带来的是样本之间其他相关变量分布的不平衡。所以使用逆倾向得分属于只考虑了策略的倾向选择概率，却用来平衡样本之间其他相关变量的分布。Covariate balancing propensity score (CBPS)，协变量平衡倾向得分方法被设计出来来同时衡量这两方面，来使倾向得分更准确。CBPS得到倾向得分的方式是求解下面的方程：
+> $$
+> \mathbb{E}\left[\frac{W_i \tilde{x}_i}{e\left(x_i ; \beta\right)}-\frac{\left(1-W_i\right) \tilde{x}_i}{1-e\left(x_i ; \beta\right)}\right]=0
+> $$
+> 更多参考：
+>
+> - [因果推断|反事实推断|经典论文解读|CBGPS模型-针对连续策略变量 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/521837937)
 
 
 
@@ -200,6 +279,8 @@ Imai K, Ratkovic M. [Covariate balancing propensity score](https://imai.fas.harv
 > -c+\sum_y v_y\left(P^T(y \mid l)-P^C(y \mid l)\right)
 > $$
 > 我们只需要这个值大于0，对于新样本，这个treatment就是可以执行的。
+>
+> 解读：[中文翻译](https://jackhcc.notion.site/Decision-trees-for-uplift-modeling-with-single-and-multiple-treatments-bd562112ec1649979a740cc8aee01610)
 
 
 
@@ -214,10 +295,14 @@ Imai K, Ratkovic M. [Covariate balancing propensity score](https://imai.fas.harv
 > - 渗透（或相似）模型【penetration (or lookalike) models】，旨在描述已经购买产品的客户。他们的使用是基于这样的假设，即与已经购买的人具有相似特征的人将成为良好的目标，这一假设在远未饱和的市场中往往具有最大的有效性；
 > - 购买模型【purchase models】，旨在描述在最近历史时期购买过的客户。这些模型类似于渗透模型，但将注意力局限于最近的过去。因此，他们可以对整个产品购买周期中客户特征的变化更加敏感，从早期采用者到主流多数，再到落后者；
 > - “响应”模型【response models】，旨在描述对某些（直接）营销活动（如直接邮件）作出明显“响应”的客户。有时，“响应者”的识别涉及优惠券或响应代码（“直接归因”），而在其他情况下，它只是基于客户在某个有限的时间窗口内收到通信和购买的组合（“直接归属”）响应模型通常被认为比渗透模型和购买模型更复杂，因为它们至少试图将购买结果与旨在刺激该活动的营销活动联系起来。
-
+>
 > 今天大多数有针对性的营销活动，即使是以增量影响为基础来衡量，也是以非增量模型为基础的。
 >
 > 文章提出了一种基于Significance-Based分裂二叉树的准则，具体看论文6.2节。
+
+
+
+---
 
 ✔ *Zhao, Yan, Xiao Fang, and David Simchi-Levi. "[Uplift modeling with multiple treatments and general response types."](https://epubs.siam.org/doi/pdf/10.1137/1.9781611974973.66) Proceedings of the 2017 SIAM International Conference on Data Mining. Society for Industrial and Applied Mathematics, 2017.
 
@@ -244,15 +329,19 @@ Code Example: [causal_trees_with_synthetic_data.ipynb](./Tools/causalml/causal_t
 
 ---
 
-Wager S , Athey S . [Estimation and Inference of Heterogeneous Treatment Effects using Random Forests](https://arxiv.org/pdf/1510.04342.pdf)[J]. Journal of the American Statal Association, 2018, 113(523):1228-1242.
+✔ Wager S , Athey S . [Estimation and Inference of Heterogeneous Treatment Effects using Random Forests](https://arxiv.org/pdf/1510.04342.pdf)[J]. Journal of the American Statal Association, 2018, 113(523):1228-1242.
 
 - **Double-Sample Tree** | **Propensity Tree**
+
+> 文章给出了Causal Forest建模的理论论证。
+
+
 
 ---
 
 
 
-## ✔ Instrumental Variables Algorithms
+## Instrumental Variables Algorithms
 
 > 一般不推荐使用IV方法，因为真正valid的工具变量非常难找，“只有上帝才能找到真正的IV”。
 >
@@ -301,7 +390,7 @@ Code Example：[Here](https://github.com/jhartford/DeepIV)
 
 ## **Neural-network-based Algorithms**
 
-Johansson, Fredrik D., Shalit, Uri, and Sontag, David. [Learning representations for counterfactual inference](https://www.tandfonline.com/doi/pdf/10.1080/01621459.1996.10476902). In *Proceed- ings of the 33rd International Conference on Machine Learn- ing (ICML)*, 2016.
+✔ Johansson, Fredrik D., Shalit, Uri, and Sontag, David. [Learning representations for counterfactual inference](https://www.tandfonline.com/doi/pdf/10.1080/01621459.1996.10476902). In *Proceed- ings of the 33rd International Conference on Machine Learn- ing (ICML)*, 2016.
 
 - **BNN/BLR**
 
@@ -309,30 +398,83 @@ Johansson, Fredrik D., Shalit, Uri, and Sontag, David. [Learning representations
 >
 > 那我们首先来说这个balancing，是要balance什么? 我们不难发现，大多数用observational data做因果的论文都存在一个balance样本的步骤。因为我们是无法对于同一个样本同时观察到他 factual和counterfactual的结果的，所以我们一般只有factual的样本， counterfactual是我们需要去推断的。那么问题来了，回想起因果最好做的随机对照实验 (RCT)，这种实验的treatment t的分配和feature X是独立的，即 $t \perp X$ 。而在observational study的领域，这种treatment的分配其实并不是随机的，也不是和feature独立的，比方说我们在研究优惠券对转化率的 uplift的时候，其实observational数据里确实CTR预估出转化率高的用户更有可能得到treatment，这时候 $t \not X$ 。这也就导致factual和counterfactual的数据分布往往是不一致的。所以我们就希望能 balance数据使得这两个分布尽可能接近。其实这也可以理解为在解决有unobserved confounder的一个情况，因为这就可以理解为我们有一些不可控的变量会同时影响着 $t$ 和 $y$ 。
 >
-> Hidden confounder其实是为了 满足在Potential Outcome Framework这个框架中的一个假设，即ignorability (unconfoundedness)。他的意思是假设全部的confounder都在feature $X$ 中且是observed，加 入全部confounder在一个set $s \in X$ ，我们有 $y \perp t \mid s$ ，这是最理想的情况。如果这个时候我们还有一些confounder并不在可以observed的 $X$ 里会出现啥情况呢，那这个条件就会失效，一旦失效就很难用这个框架了。所以我们接下来全篇中的方法其实都是通过深度学习来解决当不满足 ignorability假设时怎么办。
+> Hidden confounder其实是为了满足在Potential Outcome Framework这个框架中的一个假设，即ignorability (unconfoundedness)。他的意思是假设全部的confounder都在feature $X$ 中且是observed，加入全部confounder在一个set $s \in X$ ，我们有 $y \perp t \mid s$ ，这是最理想的情况。如果这个时候我们还有一些confounder并不在可以observed的 $X$ 里会出现啥情况呢，那这个条件就会失效，一旦失效就很难用这个框架了。所以很多论文都其实都是通过深度学习来解决当不满足 ignorability假设时怎么办。
 >
-> 我们令factual的分布为 $P^F$ 和 $P^{C F}$ ，所以我们希望他们的discrepancy distance尽量小。在讲 模型之前，这里我们首先做一个定义，这篇文章对于任意样本 $i$ ，给他找了一个近似的"counterfactual" $j(i) ， j(i)$ 定义如下: $j(i)=\operatorname{argmin}_{j \in\{1, \ldots, n\} \text { s.t.t }_j=1-t_i} d\left(x_j, x_i\right)$ 。 $d()$ 作为一个 distance measurement， $j(i)$ 也就是和 $i$ 的treatment相反的样本里， feature和 $i$ 最像的。
+> 我们令factual的分布为 $P^F$ 和 $P^{C F}$ ，所以我们希望他们的discrepancy distance尽量小。在讲模型之前，这里我们首先做一个定义，这篇文章对于任意样本 $i$ ，给他找了一个近似的"counterfactual" $j(i) ， j(i)$ 定义如下: $j(i)=\operatorname{argmin}_{j \in\{1, \ldots, n\} \text { s.t.t }_j=1-t_i} d\left(x_j, x_i\right)$ 。 $d()$ 作为一个 distance measurement， $j(i)$ 也就是和 $i$ 的treatment相反的样本里， feature和 $i$ 最像的。
 >
 > <img src="./img/Basic/057.png" style="zoom:70%;" />
 >
-> 模型根据上面这个网络来训练。具体怎么做呢? x就是全部的训练样本， $x$ 会先经过一个表征网络 $\Phi()$ ，得到一个表征后的 $\Phi(x)$ ，然后通过一个线性函数 $h()$ ，这个函数输入是 $\Phi(x)$ 和 $t$ ，输 出是 $y$ 。这就是网络的全部啦，看上去很简单对吧，那么这个网络用什么损失来训练呢? 这就是 重点了:
+> 模型根据上面这个网络来训练。具体怎么做呢? x就是全部的训练样本， $x$ 会先经过一个表征网络 $\Phi()$ ，得到一个表征后的 $\Phi(x)$ ，然后通过一个线性函数 $h()$ ，这个函数输入是 $\Phi(x)$ 和 $t$ ，输出是 $y$ 。这就是网络的全部啦，看上去很简单对吧，那么这个网络用什么损失来训练呢? 这就是重点了:
 > $$
 > \begin{aligned}
 > & L(\Phi, h)=\frac{1}{n} \sum_{i=1}^n\left|h\left(\Phi\left(x_i\right), t_i\right)-y_i\right|+\gamma * \frac{1}{n} \sum_{i=1}^n\left|h\left(\Phi\left(x_i\right), 1-t_i\right)-y_{j(i)}\right|+\alpha \\
 > & * \operatorname{disc}\left(\hat{P}_{\Phi}^F, \hat{P}_{\Phi}^{C F}\right)
 > \end{aligned}
 > $$
-> 第一项是factual error，就是对factual的样本拟合出来的 $h\left(\Phi\left(x_i\right), t_i\right)$ 和真实的 $y$ 尽可能接近， 就是一般神经网络的目的。第二项是counterfactual error，就是对"counterfactual"的样本，比 如对于样本 $i$ ，他的counterfactual是 $j(i)$ ，则 $i$ 在 $1-t_i$ 情况下预测出来的
-> $\hat{y}_i=h\left(\Phi\left(x_i\right), 1-t_i\right)$ 要和他的counterfactual的真实 $y_{j(i)}$ 足够接近。第三项是重点，就是对 上面说到的分布做一个修正，希望用 $\Phi$ 表征后的分布在factual和counterfactual上面尽量相同。 这个分布的计算可以看论文，也是用到上面的概念。也就是这个表征就是用来balance分布的。
-> 注意这个方法是一个two-stage minimization，上面这个loss只用来找到最优的 $\Phi$ ，训练好这个 $\Phi$ 后，还有一个训练回归方程 $h$ 的步骤，loss就是一个均方误差加一个正则项，比较简单不敖 述。最后输出最优的 $\Phi$ 和 $h$ 。预测时候，对于 $x$ ，通过改变 $t$ ，就可以用这个网络得到两个不 同的值，然后相减得到最后的CATE/ITE/uplift。
+> 第一项是factual error，就是对factual的样本拟合出来的 $h\left(\Phi\left(x_i\right), t_i\right)$ 和真实的 $y$ 尽可能接近， 就是一般神经网络的目的。第二项是counterfactual error，就是对"counterfactual"的样本，比如对于样本 $i$ ，他的counterfactual是 $j(i)$ ，则 $i$ 在 $1-t_i$ 情况下预测出来的
+> $\hat{y}_i=h\left(\Phi\left(x_i\right), 1-t_i\right)$ 要和他的counterfactual的真实 $y_{j(i)}$ 足够接近。第三项是重点，就是对上面说到的分布做一个修正，希望用 $\Phi$ 表征后的分布在factual和counterfactual上面尽量相同。 这个分布的计算可以看论文，也是用到上面的概念。也就是这个表征就是用来balance分布的。
+> 注意这个方法是一个two-stage minimization，**上面这个loss只用来找到最优的 $\Phi$ ，训练好这个 $\Phi$ 后，还有一个训练回归方程 $h$ 的步骤，loss就是一个均方误差加一个正则项**，比较简单不赘述。最后输出最优的 $\Phi$ 和 $h$ 。预测时候，对于 $x$ ，通过改变 $t$ ，就可以用这个网络得到两个不同的值，然后相减得到最后的CATE/ITE/uplift。
 
 ---
 
-V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, and a. W. Newey. [Double Machine Learning for Treatment and Causal Parameters](https://arxiv.org/pdf/1608.00060.pdf). *ArXiv e-prints*, July 2016.
+✔ V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, and a. W. Newey. [Double Machine Learning for Treatment and Causal Parameters](https://arxiv.org/pdf/1608.00060.pdf). *ArXiv e-prints*, July 2016.
 
 - **DML**
 
+> DML模型分为以下三个步骤：
+> 步骤一. 用任意 ML模型拟合Y和T得到残差 $\tilde{Y}, \tilde{T}$
+> $$
+> \begin{aligned}
+> & \tilde{Y}=Y-l(x) \quad \text { where } l(x)=E(Y \mid x) \\
+> & \tilde{T}=T-m(x) \quad \text { where } m(x)=E(T \mid x) \\
+> &
+> \end{aligned}
+> $$
+> 步骤二. 对 $\tilde{Y}, \tilde{T}$ 用任意 $\mathbf{M L}$ 模型拟合 $\hat{\theta}$
+> $\theta(X)$ 的拟合可以是参数模型也可以是非参数模型，参数模型可以直接拟合。而非参数模型因为只接受输入和输出所以需要再做如下变换，模型Target变为 $\frac{\bar{Y}}{\bar{T}}$ ，样 本权重为 $\tilde{T}^2$
+> $$
+> \begin{aligned}
+> & \tilde{Y}=\theta(x) \tilde{T}+\epsilon \\
+> & \operatorname{argmin} E\left[(\tilde{Y}-\theta(x) \cdot \tilde{T})^2\right] \\
+> & E\left[(\tilde{Y}-\theta(x) \cdot \tilde{T})^2\right]=E\left(\tilde{T}^2\left(\frac{\tilde{Y}}{\tilde{T}}-\theta(x)\right)^2\right)
+> \end{aligned}
+> $$
+> 步骤三. Cross-fitting
+> DML保证估计无偏很重要的一步就是Cross-fitting，用来降低overfitting带来的估计偏差。先把总样本分成两份：样本 1 ，样本 2 。先用样本1估计残差，样本2 估计 $\hat{\theta}^1$ ，再用样本2估计残差，样本1估计 $\hat{\theta}^2$ ，取平均得到最终的估计。当然也可以进一步使用K-Fold来增加估计的稳健性。
+> $$
+> \begin{aligned}
+> & sample_1, sample_2=sample\_split \\
+> & \theta=\hat{\theta}^1+\hat{\theta}^2 \\
+> &
+> \end{aligned}
+> $$
+> **使用DML估计ATE**：
+>
+> 具体到因果推断的例子上，我们只关心Treatment T 对 outcome Y的影响，因此我们可以首先使用X回归T，得到一个T的残差（实际T - 预测T），然后使用X回归Y，得到一个Y的残差（实际Y - 预测Y），最后使用T的残差回归Y的残差，估计的参数即我们想要的ATE。
+> $$
+> \begin{aligned}
+> & (Y-(Y \sim X)) \sim(T-(T \sim X)) \\
+> & Y_i-E\left[Y_i \mid X_i\right]=\tau \cdot\left(T_i-E\left[T_i \mid X_i\right]\right)+\epsilon
+> \end{aligned}
+> $$
+>
+> 具体的DML方法也就出来了，其核心思想即分别用机器学习算法基于X预测T和Y，然后使用T的残差回归Y的残差：
+> $$
+> Y_i-\hat{M}_y\left(X_i\right)=\tau \cdot\left(T_i-\hat{M}_t\left(X_i\right)\right)+\epsilon
+> $$
+> **使用DML估计CATE**：
+>
+> 同样地，我们首先基于X使用ML获得T的残差和Y的残差，之后使用lr拟合残差，不同的是，这次我们把X和T的交互项加进来，即：
+> $$
+> \begin{aligned}
+> & Y_i-M_y\left(X_i\right)=\tau\left(X_i\right) \cdot\left(T_i-M_t\left(X_i\right)\right)+\epsilon_i \\
+> & \tilde{Y}_i=\alpha+\beta_1 \tilde{T}_i+\boldsymbol{\beta}_2 \boldsymbol{X}_{\boldsymbol{i}} \tilde{T}_i+\epsilon_i
+> \end{aligned}
+> $$
 > 更多参考：
+>
+> - [因果推断笔记——DML ：Double Machine Learning案例学习（十六） - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/429839492)
+> - [AB实验人群定向HTE模型4 - Double Machine Learning - 风雨中的小七 - 博客园 (cnblogs.com)](https://www.cnblogs.com/gogoSandy/p/12285168.html)
 >
 > - ⭐[Double Machine Learning](https://econml.azurewebsites.net/spec/estimation/dml.html)
 > - ⭐[Dynamic Double Machine Learning](https://econml.azurewebsites.net/spec/estimation/dynamic_dml.html)
@@ -341,31 +483,41 @@ V. Chernozhukov, D. Chetverikov, M. Demirer, E. Duflo, C. Hansen, and a. W. Newe
 
 ---
 
-Shalit, Uri, Fredrik D. Johansson, and David Sontag. "[Estimating individual treatment effect: generalization bounds and algorithms.](http://proceedings.mlr.press/v70/shalit17a/shalit17a.pdf)" arXiv preprint arXiv:1606.03976 (2016).
+✔ Shalit, Uri, Fredrik D. Johansson, and David Sontag. "[Estimating individual treatment effect: generalization bounds and algorithms.](http://proceedings.mlr.press/v70/shalit17a/shalit17a.pdf)" arXiv preprint arXiv:1606.03976 (2016).
 
 - **TARNet/CFR**
 
 <img src="./img/Basic/059.png" style="zoom:90%;" />
 
-> 这里模型也是一个two-stage的模型（但是end-to-end的哦，上一个方法是完全两阶段分开训 练)。第一阶段叫做representation network: 拟合一个representation $\Phi(x)$ ；第二阶段叫做 hypothesis network，是有一个分叉，对于 $\mathrm{t}=1$ 的样本，通过一个 $h_1(\Phi)$ 的网络来拟合，对于 $\mathrm{t}=0$ 的样本，通过一个 $h_0(\Phi)$ 的网络来拟合。这样做相较于上一个方法的优点是什么呢? 1. 这里 $\Phi(x)$ 和 $h(\Phi)$ 都用NN可以拟合nonlinear的关系，2. 这个方法学到的表征可以是高维的。因为 承接表征的网络 $h$ 也是NN而不是线性方程。3. 比起简单的把 $\Phi$ 和 $t$ concat起来作为一个网络， 当 $\Phi$ 是高维的时候，这样做可以增加 $t$ 对 $h$ 的影响，不至于被淹没。这里注意，这种两头的模 型，在每次训练时，每个样本只会走一头，也就是只有一头的参数被update，必如 $\mathrm{t}=1$ 的样本训练 时只会update $h_1$ 这个网络。
+> 这里模型也是一个two-stage的模型（但是end-to-end的哦，上一个方法是完全两阶段分开训 练)。第一阶段叫做representation network: 拟合一个representation $\Phi(x)$ ；第二阶段叫做 hypothesis network，是有一个分叉，对于 $\mathrm{t}=1$ 的样本，通过一个 $h_1(\Phi)$ 的网络来拟合，对于 $\mathrm{t}=0$ 的样本，通过一个 $h_0(\Phi)$ 的网络来拟合。这样做相较于上一个方法的优点是什么呢? 1. 这里 $\Phi(x)$ 和 $h(\Phi)$ 都用NN可以拟合nonlinear的关系，2. 这个方法学到的表征可以是高维的。因为 承接表征的网络 $h$ 也是NN而不是线性方程。3. 比起简单的把 $\Phi$ 和 $t$ concat起来作为一个网络， 当 $\Phi$ 是高维的时候，这样做可以增加 $t$ 对 $h$ 的影响，不至于被淹没。这里注意，这种两头的模型，在每次训练时，每个样本只会走一头，也就是只有一头的参数被update，必如 $\mathrm{t}=1$ 的样本训练时只会update $h_1$ 这个网络。
+>
+> <img src="./img/Basic/061.png" style="zoom:90%;" />
+
+Code Example：[Here](https://github.com/clinicalml/cfrnet)
 
 ---
 
-Yao, Liuyi, Sheng Li, Yaliang Li, Mengdi Huai, Jing Gao, and Aidong Zhang. "[Representation Learning for Treatment Effect Estimation from Observational Data](https://proceedings.neurips.cc/paper/2018/file/a50abba8132a77191791390c3eb19fe7-Paper.pdf)." In Advances in Neural Information Processing Systems, pp. 2638-2648. 2018.
+✔ Yao, Liuyi, Sheng Li, Yaliang Li, Mengdi Huai, Jing Gao, and Aidong Zhang. "[Representation Learning for Treatment Effect Estimation from Observational Data](https://proceedings.neurips.cc/paper/2018/file/a50abba8132a77191791390c3eb19fe7-Paper.pdf)." In Advances in Neural Information Processing Systems, pp. 2638-2648. 2018.
 
 - **SITE**
 
 <img src="./img/Basic/058.png" style="zoom:80%;" />
 
+> 解读：[中文翻译](https://jackhcc.notion.site/Representation-Learning-for-Treatment-Effect-Estimation-from-Observational-Data-7b26f95ac7c447219853151ceddf5ade)
+
 
 
 ---
 
-Schwab, Patrick, Lorenz Linhardt, and Walter Karlen. "[Perfect match: A simple method for learning representations for counterfactual inference with neural networks.](https://arxiv.org/pdf/1810.00656)" arXiv preprint arXiv:1810.00656 (2018)
+✔ Schwab, Patrick, Lorenz Linhardt, and Walter Karlen. "[Perfect match: A simple method for learning representations for counterfactual inference with neural networks.](https://arxiv.org/pdf/1810.00656)" arXiv preprint arXiv:1810.00656 (2018)
 
 - **Perfect Match**
 
+> TARNet在Multi Treatment下的类比设计。
+>
+> 解读：[中文翻译](https://jackhcc.notion.site/Perfect-match-A-simple-method-for-learning-representations-for-counterfactual-inference-with-neural-e3da2a584d394822b5f7c93ff954d9b4)
 
+Code Example：[Here](https://github.com/d909b/perfect_match)
 
 ---
 
@@ -376,8 +528,10 @@ Schwab, Patrick, Lorenz Linhardt, and Walter Karlen. "[Perfect match: A simple m
 <img src="./img/Basic/055.png" style="zoom:60%;" />
 
 > 更多参考：[大白话谈因果系列文章（四）估计uplift--深度学习方法 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/398938743)
+>
+> 解读：[中文翻译](https://jackhcc.notion.site/Causal-effect-inference-with-deep-latent-variable-models-69338659519e464ba47a45fac07ec0fe)
 
-Code Example: [cevae_example.ipynb](./Tools/causalml/cevae_example.ipynb)
+Code Example: [cevae_example.ipynb](./Tools/causalml/cevae_example.ipynb) | [Here](https://github.com/AMLab-Amsterdam/CEVAE) | [Torch](https://github.com/rik-helwegen/CEVAE_pytorch)
 
 ---
 
@@ -387,7 +541,11 @@ Code Example: [cevae_example.ipynb](./Tools/causalml/cevae_example.ipynb)
 
 <img src="./img/Basic/056.png" style="zoom:80%;" />
 
+> 解读：[中文翻译](https://jackhcc.notion.site/Adapting-neural-networks-for-the-estimation-of-treatment-effects-c67696e232ac4979b6978c576c4654a4)
+>
 > 更多参考：[因果推断深度学习工具箱 - Adapting Neural Networks for the Estimation of Treatment Effects - 简书 (jianshu.com)](https://www.jianshu.com/p/6368d118c06e)
+>
+> <img src="./img/Basic/062.png" style="zoom:80%;" />
 
 Code Example: [dragonnet_example.ipynb](./Tools/causalml/dragonnet_example.ipynb) | [Here](https://github.com/claudiashi57/dragonnet)
 
@@ -402,7 +560,7 @@ Code Example: [dragonnet_example.ipynb](./Tools/causalml/dragonnet_example.ipynb
 
 
 
-Imbens G, Hirano K. [The Propensity Score with Continuous Treatments](http://rogosateaching.com/somgen290/cc_9.pdf). 2004.
+✔ Imbens G, Hirano K. [The Propensity Score with Continuous Treatments](http://rogosateaching.com/somgen290/cc_9.pdf). 2004.
 
 - **GPS (generalized propensity score)**
 
@@ -428,7 +586,7 @@ Imbens G, Hirano K. [The Propensity Score with Continuous Treatments](http://rog
 
 ---
 
-Chernozhukov V, Chetverikov D, Demirer M, et al. [Double/debiased machine learning for treatment and structural parameters](Double/debiased machine learning for treatment and structural parameters)[J]. 2018.
+✔ Chernozhukov V, Chetverikov D, Demirer M, et al. Double/debiased machine learning for treatment and structural parameters[J]. 2018.
 
 - **LinearDML**：DML即double machine learning应该是一个很常用的方法。
 
@@ -463,7 +621,7 @@ Chernozhukov V, Chetverikov D, Demirer M, et al. [Double/debiased machine learni
 
 ---
 
-Athey S, Tibshirani J, Wager S. Generalized random forests[J]. The Annals of Statistics, 2019, 47(2): 1148-1178.
+✔ Athey S, Tibshirani J, Wager S. Generalized random forests[J]. The Annals of Statistics, 2019, 47(2): 1148-1178.
 
 - **GRF (generalized random forest)**
 
