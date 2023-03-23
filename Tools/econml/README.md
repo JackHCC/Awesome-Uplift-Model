@@ -342,7 +342,7 @@ treatment_effects = est.effect(X_test)
 
 **Can set W**
 
-如果你运行一个实验，就不必担心混淆。包含在对照集将有助于提高较小样本中的估计效率，但不是必需的确定因果效应。
+xxxxxxxxxx pd.Series(uplift_model.feature_importances_, index=x_names).sort_values().plot(kind='barh', figsize=(12,8))python
 
 **CAUTION**
 

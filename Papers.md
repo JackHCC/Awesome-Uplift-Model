@@ -145,7 +145,7 @@ Code Example: [validation_with_tmle.ipynb](./Tools/causalml/validation_with_tmle
 
 > PSM的提出与理论基础
 >
-> 对于PSM (propensity score matching) 来说，他是greedy one-to-one matching，就是一定 要给每个instance找一个对象。首先他会计算一个propensity score $P(t \mid x)$ ，为咶呢? 因为他假 设treatment t是一个从某个分布中抽出来的随机变量，即 $t_i \sim P\left(t_i \mid x_i\right)$ 。这个propensity score就是计算given $\mathrm{x}$ ，他倾向于得到某种treatment的概率，也就是一个二分类的分数，一般这 个score用LR来拟合。得到propensity score后，我们给每个样本找一个与之treatment不同的对象 (通过propensity score得分最接近来找)。所以对于样本i，我们找到样本 s.t $\operatorname{argmin}_j \operatorname{dist}(i, j)=\left|P\left(t \mid x_i\right)-P\left(t \mid x_j\right)\right|$ 。然后ATE就是:
+> 对于PSM (propensity score matching) 来说，他是greedy one-to-one matching，就是一定要给每个instance找一个对象。首先他会计算一个propensity score $P(t \mid x)$ ，为啥呢? 因为他假设treatment t是一个从某个分布中抽出来的随机变量，即 $t_i \sim P\left(t_i \mid x_i\right)$ 。这个propensity score就是计算given $\mathrm{x}$ ，他倾向于得到某种treatment的概率，也就是一个二分类的分数，一般这 个score用LR来拟合。得到propensity score后，我们给每个样本找一个与之treatment不同的对象 (通过propensity score得分最接近来找)。所以对于样本i，我们找到样本 s.t $\operatorname{argmin}_j \operatorname{dist}(i, j)=\left|P\left(t \mid x_i\right)-P\left(t \mid x_j\right)\right|$ 。然后ATE就是:
 > $$
 > \hat{\tau}=\frac{1}{n}\left[\sum_{i: t_i=1}\left(y_i-y_j\right)+\sum_{i: t_i=0}\left(y_j-y_i\right)\right]
 > $$
