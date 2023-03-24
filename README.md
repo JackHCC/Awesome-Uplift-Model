@@ -211,6 +211,14 @@ The most commonly used models for causal inference are Rubin Causal Model (RCM; 
 - [Uplift Paper Reading](./Papers.md)
 - [Causal Discovery Paper Reading](./CD_Papers.md)
 
+## Models
+
+- [x] TARNet
+- [x] DragonNet
+- [x] DUNet
+- [x] CEVAE
+- [ ] Perfect Match
+- [ ] SITE
 
 
 ## Contact
